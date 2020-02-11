@@ -1,2 +1,10 @@
-# amazing-snowflake
-Created with CodeSandbox
+# Amazing Snowflake
+
+## Information
+
+```
+react
+react-dom
+mobx
+mobx-react
+```
