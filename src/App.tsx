@@ -1,7 +1,7 @@
 import * as React from "react";
 import "./styles.css";
-import Counter from "./Counter";
-import countState from "./CounterStore";
+import Counter from "./counter/Counter";
+import countState from "./counter/CounterStore";
 
 export default function App() {
   return (
