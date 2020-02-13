@@ -1,8 +1,10 @@
 import { observer } from 'mobx-react';
 import * as React from 'react';
-// import * as ReactDOM from "react-dom";
-// import { observable } from "mobx";
-// import { Component } from "react";
+
+import { temperaturesContainer } from './TemperatureCollectionStore';
+import InputStore from './InputStore';
+import TemperatureStore from './TemperatureStore';
+import { TemperatureTypes } from './TemperatureTypes';
 
 const Temperature = observer(({ temperaturesMap, temperaturesArray }) => {
   // render
@@ -11,25 +13,87 @@ const Temperature = observer(({ temperaturesMap, temperaturesArray }) => {
       <h2>Temperature</h2>
       <TViewByMap temperatures={temperaturesMap} />
       <TViewByArray temperatures={temperaturesArray} />
+      <TViewInput temperatures={temperaturesContainer} />
     </div>
+  );
+});
+
+const inputX = new InputStore();
+
+const TViewInput = observer(({ temperatures }) => {
+  return (
+    <>
+      <h3>By Input</h3>
+      <TemperatureInput temperatures={temperatures} store={inputX} />
+      <p> Cities ​​temperature list from openweathermap.org</p>
+      <ul>
+        {temperatures.map(temperature => (
+          <TViewByLocation key={temperature.id} temperature={temperature} />
+        ))}
+      </ul>
+    </>
+  );
+});
+
+// Display temperature value from array
+const TViewByLocation = observer(({ temperature }) => {
+  return (
+    <>
+      <li>
+        {temperature.location}:{' '}
+        {temperature.loading ? 'loading...' : temperature.temperature}
+      </li>
+    </>
+  );
+});
+
+const TemperatureInput = observer(({ temperatures, store }) => {
+  const handleOnChange = e => {
+    store.onChange(e.target.value);
+  };
+
+  const handleOnSubmit = () => {
+    temperatures.push(
+      new TemperatureStore(12, TemperatureTypes.Celsius, store.input)
+    );
+    store.onSubmit();
+  };
+
+  return (
+    <>
+      <li>
+        Destination:
+        <input onChange={handleOnChange} value={store.input} />
+        <button onClick={handleOnSubmit}> Add </button>
+      </li>
+    </>
   );
 });
 
 // Display mapper temperatures
 const TViewByMap = observer(({ temperatures }) => {
-  // render
   return (
     <>
-      <h3>Map</h3>
+      <h3>Mapper</h3>
       <ul>
-        {[...temperatures.entries()].map(([city, temperature]) => {
-          return (
-            <li key={city + temperature}>
-              {city}: {temperature.temperature}
-            </li>
-          );
-        })}
+        {[...temperatures.entries()].map(([city, temperature]) => (
+          <TViewByKeyValue
+            key={temperature.id}
+            city={city}
+            temperature={temperature}
+          />
+        ))}
       </ul>
+    </>
+  );
+});
+
+const TViewByKeyValue = observer(({ city, temperature }) => {
+  return (
+    <>
+      <li>
+        {city}: {temperature.temperature}
+      </li>
     </>
   );
 });
@@ -63,6 +127,12 @@ const TViewByValue = observer(({ temperature }) => {
 export default Temperature;
 
 /*
+
+import * as ReactDOM from 'react-dom';
+import { observable } from 'mobx';
+import { Component } from 'react';
+
+
   for (let [key, value] of temperatures.entries()) {
     console.log(key + " = " + value.temperature);
   }
@@ -70,4 +140,18 @@ export default Temperature;
     console.log(key, value)
   );
 
+  {[...temperatures.entries()].map(([city, temperature]) => {
+          return (
+            <li key={city + temperature}>
+              {city}: {temperature.temperature}
+            </li>
+          );
+        })}
+
+
+        <TViewByKeyValue
+            key={temperature.id}
+            city={city}
+            temperature={temperature}
+          />
 */

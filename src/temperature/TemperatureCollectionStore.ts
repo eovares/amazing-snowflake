@@ -17,7 +17,9 @@ const temperatureArray = observable(
   )
 );
 
-export { temperatureByCity, temperatureArray };
+const temperaturesContainer = observable(new Array());
+
+export { temperaturesContainer, temperatureByCity, temperatureArray };
 
 /*
 return new Map([

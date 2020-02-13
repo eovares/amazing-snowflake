@@ -2,12 +2,21 @@ import { observable, computed, action } from 'mobx';
 import { TemperatureTypes } from './TemperatureTypes';
 
 class TemperatureStore {
+  id = Math.random();
   @observable unit = TemperatureTypes.Celsius;
-  @observable temperatureCelsius: number;
+  @observable temperatureCelsius: number = 0;
+  @observable location: string = '';
+  @observable loading = true;
 
-  constructor(degrees: number, unit: TemperatureTypes) {
+  constructor(degrees: number, unit: TemperatureTypes, location?: string) {
     this.unit = unit;
     this.temperatureCelsius = degrees;
+
+    if (typeof location !== 'undefined') {
+      this.setLocation(location);
+    } else {
+      this.loading = false;
+    }
   }
 
   @computed get temperatureKelvin(): number {
@@ -40,9 +49,31 @@ class TemperatureStore {
     this.temperatureCelsius = degrees;
   }
 
+  @action setLocation(location: string) {
+    this.location = location;
+    this.fetch();
+  }
+
   @action increment() {
     this.setCelsius(this.temperatureCelsius + 1);
     console.log(this.temperatureCelsius);
+  }
+
+  @action fetch() {
+    // `https://openweathermap.org/data/2.5/weather/?appid=b6907d289e10d714a6e88b30761fae22&lat=9.8622306&lo
+    window
+      .fetch(
+        `https://openweathermap.org/data/2.5/weather/?appid=b6907d289e10d714a6e88b30761fae22&q=${
+          this.location
+        }&units=metric`
+      )
+      .then(res => res.json())
+      .then(
+        action(json => {
+          this.temperatureCelsius = json.main.temp;
+          this.loading = false;
+        })
+      );
   }
 
   @action('Update temperature and unit')
