@@ -1,5 +1,5 @@
-import { observable, computed, action } from "mobx";
-import { TemperatureTypes } from "./TemperatureTypes";
+import { observable, computed, action } from 'mobx';
+import { TemperatureTypes } from './TemperatureTypes';
 
 class TemperatureStore {
   @observable unit = TemperatureTypes.Celsius;
@@ -11,24 +11,24 @@ class TemperatureStore {
   }
 
   @computed get temperatureKelvin(): number {
-    console.log("calculating Kelvin");
+    console.log('calculating Kelvin');
     return this.temperatureCelsius * (9 / 5) + 32;
   }
 
   @computed get temperatureFahrenheit(): number {
-    console.log("calculating Kelvin");
+    console.log('calculating Kelvin');
     return this.temperatureCelsius + 273.15;
   }
 
   @computed get temperature(): string {
-    console.log("calculating temperature");
+    console.log('calculating temperature');
 
     if (this.unit === TemperatureTypes.Kelvin) {
-      return this.temperatureKelvin.toString() + "°K";
+      return this.temperatureKelvin.toString() + '°K';
     } else if (this.unit === TemperatureTypes.Fahrenheit) {
-      return this.temperatureFahrenheit.toString() + "°F";
+      return this.temperatureFahrenheit.toString() + '°F';
     } else {
-      return this.temperatureCelsius.toString() + "°C";
+      return this.temperatureCelsius.toString() + '°C';
     }
   }
 
@@ -40,7 +40,12 @@ class TemperatureStore {
     this.temperatureCelsius = degrees;
   }
 
-  @action("Update temperature and unit")
+  @action increment() {
+    this.setCelsius(this.temperatureCelsius + 1);
+    console.log(this.temperatureCelsius);
+  }
+
+  @action('Update temperature and unit')
   setTemperatureAndUnit(degrees: number, unit: TemperatureTypes) {
     this.setUnit(unit);
     this.setCelsius(degrees);
