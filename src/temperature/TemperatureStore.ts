@@ -60,7 +60,7 @@ class TemperatureStore {
   }
 
   @action fetch() {
-    // `https://openweathermap.org/data/2.5/weather/?appid=b6907d289e10d714a6e88b30761fae22&lat=9.8622306&lo
+    // https://openweathermap.org/data/2.5/weather/?appid=b6907d289e10d714a6e88b30761fae22&lat=9.8622306&lon=-83.9231756&units=metric
     window
       .fetch(
         `https://openweathermap.org/data/2.5/weather/?appid=b6907d289e10d714a6e88b30761fae22&q=${

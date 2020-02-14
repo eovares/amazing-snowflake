@@ -1,7 +1,6 @@
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import * as React from 'react';
 
-import { temperaturesContainer } from './TemperatureCollectionStore';
 import InputStore from './InputStore';
 import TemperatureStore from './TemperatureStore';
 import { TemperatureTypes } from './TemperatureTypes';
@@ -13,27 +12,29 @@ const Temperature = observer(({ temperaturesMap, temperaturesArray }) => {
       <h2>Temperature</h2>
       <TViewByMap temperatures={temperaturesMap} />
       <TViewByArray temperatures={temperaturesArray} />
-      <TViewInput temperatures={temperaturesContainer} />
+      <TViewInput />
     </div>
   );
 });
 
 const inputX = new InputStore();
 
-const TViewInput = observer(({ temperatures }) => {
-  return (
-    <>
-      <h3>By Input</h3>
-      <TemperatureInput temperatures={temperatures} store={inputX} />
-      <p> Cities ​​temperature list from openweathermap.org</p>
-      <ul>
-        {temperatures.map(temperature => (
-          <TViewByLocation key={temperature.id} temperature={temperature} />
-        ))}
-      </ul>
-    </>
-  );
-});
+const TViewInput = inject('temperatures')(
+  observer(({ temperatures }) => {
+    return (
+      <>
+        <h3>By Input</h3>
+        <TemperatureInput temperatures={temperatures} store={inputX} />
+        <p> Cities ​​temperature list from openweathermap.org</p>
+        <ul>
+          {temperatures.map(temperature => (
+            <TViewByLocation key={temperature.id} temperature={temperature} />
+          ))}
+        </ul>
+      </>
+    );
+  })
+);
 
 // Display temperature value from array
 const TViewByLocation = observer(({ temperature }) => {
